@@ -1,0 +1,42 @@
+import random
+
+palabras = ["casa", "minecraft", "python", "perro", "gato"]
+
+palabra = random.choice(palabras)
+
+oculta = ["_"] * len(palabra)
+intentos = 6
+print(" == ahorcado ==")
+
+while intentos > 0:
+    print("\npalabra:", " ".join(oculta))
+
+    entrada = input("ingresa una letra o unapalabra:").lower()
+    
+    if entrada == palabra:
+        print("\n🎉 ¡ganaste!")
+        print(" la palabra era:", palabra)
+        break
+
+    elif len(entrada) == 1:
+        if entrada in palabra:
+            for i in range(len(palabra)):
+                if palabra[i] == entrada:
+                    oculta[i] = entrada 
+            print("¡corecto!")
+
+            if "_" not in oculta:
+                 print("\n🎉 ¡ganaste!")
+                 print( " la palabra era:", palabra)
+
+        else:
+            intentos -= 1
+            print("incorrecto. intentos restantes:", intentos)
+
+    else:
+        intentos -= 1
+        print("esa no es la palabra. intentos restantes:", intentos)
+
+if intentos == 0:
+    print("\n☠️ perdiste.")
+    print("la palabra era:", palabra)

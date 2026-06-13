@@ -1,0 +1,105 @@
+import tkinter as tk
+import random
+
+# Palabras posibles
+palabras = ["casa", "minecraft", "python", "perro", "gato"]
+
+palabra = random.choice(palabras)
+ocultar = ["_"] * len(palabra)
+intentos = 9
+
+def jugar():
+    global intentos
+
+    entrada = caja.get().lower().strip()
+    caja.delete(0, tk.END)
+
+    if entrada == "":
+        resultado.config(text="⚠️ Ingresa una letra o palabra.")
+        return
+
+    # Intentar adivinar la palabra completa
+    if len(entrada) > 1:
+
+        if entrada == palabra:
+            palabra_label.config(text=" ".join(palabra))
+            resultado.config(
+                text=f"🎉 ¡Ganaste! La palabra era: {palabra}"
+            )
+            boton.config(state="disabled")
+        else:
+            intentos -= 1
+
+            if intentos > 0:
+                resultado.config(
+                    text=f"❌ Esa no es la palabra. Te quedan {intentos} intentos."
+                )
+            else:
+                resultado.config(
+                    text=f"☠️ Perdiste. La palabra era: {palabra}"
+                )
+                boton.config(state="disabled")
+        return
+
+    # Intentar una letra
+    if entrada in palabra:
+
+        letra_nueva = False
+
+        for i in range(len(palabra)):
+            if palabra[i] == entrada and ocultar[i] == "_":
+                ocultar[i] = entrada
+                letra_nueva = True
+
+        palabra_label.config(text=" ".join(ocultar))
+
+        if "_" not in ocultar:
+            resultado.config(
+                text=f"🎉 ¡Ganaste! La palabra era: {palabra}"
+)
+            boton.config(state="disabled")
+
+        elif letra_nueva:
+            resultado.config(
+                text="👍 Letra correcta. Sigue intentando.")
+        else:
+            resultado.config(
+                text="⚠️ Esa letra ya fue usada.")
+    else:
+        intentos -= 1
+
+        if intentos > 0:
+            resultado.config(
+                text=f"❌ Esa letra no está. Te quedan {intentos} intentos.")
+        else:
+            resultado.config(
+                text=f"☠️ Perdiste. La palabra era: {palabra}"
+            )
+            boton.config(state="disabled")
+
+
+# Ventana
+ventana = tk.Tk()
+ventana.title("Ahorcado Neón")
+ventana.geometry("700x500")
+ventana.config(bg="black")
+
+titulo = tk.Label(ventana, text="=== AHORCADO ===", font=("Arial", 28, "bold"), fg="cyan", bg="black")
+titulo.pack(pady=20)
+
+palabra_label = tk.Label(ventana, text=" ".join(ocultar), font=("Consolas", 28, "bold"), fg="white", bg="black")
+palabra_label.pack(pady=20)
+
+caja = tk.Entry(ventana, font=("Arial", 18), justify="center", width=20, bg="white")
+caja.pack(pady=10)
+
+boton = tk.Button(ventana, text="INTENTAR", command=jugar, font=("Arial", 16, "bold"), bg="cyan", fg="white", activebackground="#00ffff", relief="flat", padx=15, pady=5)
+boton.pack(pady=15)
+
+resultado = tk.Label(ventana, text="", font=("Arial", 16), fg="white", bg="black")
+resultado.pack(pady=20)
+
+info = tk.Label(ventana, text="Tienes 9 intentos", font=("Arial", 12), fg="cyan", bg="black")
+info.pack()
+
+ventana.mainloop()
