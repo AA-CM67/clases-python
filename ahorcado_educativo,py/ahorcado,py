@@ -1,0 +1,135 @@
+import tkinter as tk
+
+# =====================
+# FUNCIONES
+# =====================
+
+def mostrar_inicio():
+    frame_seleccion.pack_forget()
+    frame_inicio.pack(fill="both", expand=True)
+
+
+def mostrar_seleccion():
+    frame_inicio.pack_forget()
+    frame_seleccion.pack(fill="both", expand=True)
+
+
+def comenzar_juego():
+    print("Jugador:", entrada_nombre.get())
+    print("Materia:", materia.get())
+    print("Dificultad:", dificultad.get())
+
+# =====================
+# VENTANA PRINCIPAL
+# =====================
+
+ventana = tk.Tk()
+ventana.title("Ahorcado Educativo Premium")
+ventana.geometry("900x600")
+ventana.config(bg="black")
+
+# =====================
+# FRAME INICIO
+# =====================
+
+frame_inicio = tk.Frame(ventana, bg="black")
+
+titulo = tk.Label(ventana, text="AHORCADO", font=("Arial", 24, "bold"), fg="cyan", bg="black")
+titulo.pack(pady=50)
+
+# Canvas para dibujar un ahorcado sencillo
+canvas = tk.Canvas(ventana, width=250, height=250, bg="black", highlightthickness=0)
+canvas.pack()
+
+# Horca
+canvas.create_line(20, 230, 200, 230, fill="cyan", width=3)
+canvas.create_line(60, 230, 60, 20, fill="cyan", width=3)
+canvas.create_line(60, 20, 145, 20, fill="cyan", width=3)
+canvas.create_line(145, 20, 145, 50, fill="cyan", width=3)
+
+# Cabeza
+canvas.create_oval(120, 50, 170, 100, outline="white", width=3)
+
+# Cuerpo
+canvas.create_line(145, 100, 145, 160, fill="white", width=3)
+
+# Brazos
+canvas.create_line(145, 120, 115, 140, fill="white", width=3)
+canvas.create_line(145, 120, 175, 140, fill="white", width=3)
+
+# Piernas
+canvas.create_line(145, 160, 120, 200, fill="white", width=3)
+canvas.create_line(145, 160, 170, 200, fill="white", width=3)
+
+# Funciones de prueba
+def jugar():
+    print("Botón JUGAR presionado")
+
+def historial():
+    print("Botón HISTORIAL presionado")
+
+btn_jugar = tk.Button(ventana,text="▶ JUGAR",command=jugar)
+
+# Botón Jugar
+btn_jugar = tk.Button(ventana, text="▶ JUGAR", font=("Arial", 14, "bold"), bg="cyan", fg="black", width=20, command=jugar)
+btn_jugar.pack(pady=10)
+
+# Botón Historial
+btn_historial = tk.Button(ventana, text="📜 VER HISTORIAL", font=("Arial", 14, "bold"), bg="white", fg="black", width=20, command=historial)
+btn_historial.pack(pady=10)
+
+# =====================
+# FRAME SELECCIÓN
+# =====================
+
+frame_seleccion = tk.Frame(ventana, bg="black")
+
+titulo2 = tk.Label(frame_seleccion, text="SELECCIONAR PARTIDA", font=("Arial", 24, "bold"), fg="cyan", bg="black")
+titulo2.pack(pady=20)
+
+# Materias
+tk.Label(frame_seleccion, text="Materia:", fg="white", bg="black", font=("Arial", 14)).pack()
+
+materia = tk.StringVar()
+materia.set("Matemáticas")
+
+opciones_materia = [
+    "Matemáticas",
+    "Programación",
+    "Redes",
+    "Inglés",
+    "Ciencias Naturales",
+    "Historia",
+    "Geografía",
+    "Español"
+]
+
+tk.OptionMenu(frame_seleccion, materia, *opciones_materia).pack(pady=10)
+
+# Dificultad
+tk.Label(frame_seleccion, text="Dificultad:", fg="white", bg="black", font=("Arial", 14)).pack()
+
+dificultad = tk.StringVar()
+dificultad.set("Fácil")
+
+tk.OptionMenu(frame_seleccion, dificultad, "Fácil", "Normal", "Difícil", "Leyenda").pack(pady=10)
+
+# Nombre
+tk.Label(frame_seleccion, text="Nombre del jugador:", fg="white", bg="black", font=("Arial", 14)).pack()
+
+entrada_nombre = tk.Entry(frame_seleccion, font=("Arial", 14), width=25)
+entrada_nombre.pack(pady=10)
+
+# Botón comenzar
+tk.Button(frame_seleccion, text="COMENZAR", bg="lime", fg="black", font=("Arial", 14, "bold"), command=comenzar_juego).pack(pady=10)
+
+# Botón volver
+tk.Button(frame_seleccion, text="⬅ VOLVER", bg="red", fg="white", font=("Arial", 14, "bold"), command=mostrar_inicio).pack(pady=10)
+
+# =====================
+# MOSTRAR INICIO
+# =====================
+
+frame_inicio.pack(fill="both", expand=True)
+
+ventana.mainloop()

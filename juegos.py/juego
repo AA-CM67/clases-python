@@ -1,0 +1,348 @@
+import tkinter as tk
+from tkinter import messagebox
+import random
+
+# ==========================
+# PALABRAS DEL JUEGO
+# ==========================
+palabras = [
+    "python",
+    "minecraft",
+    "perro",
+    "gato",
+    "casa",
+    "teclado",
+    "monitor",
+    "internet",
+    "programa",
+    "raton"
+]
+
+
+# ==========================
+# FUNCIONES
+# ==========================
+def nueva_partida():
+    global palabra, ocultar, errores
+
+    # Borrar el dibujo del ahorcado anterior
+    canvas.delete("ahorcado")
+
+    # Elegir nueva palabra
+    palabra = random.choice(palabras).lower()
+
+    ocultar = ["_"] * len(palabra)
+    errores = 0
+
+    palabra_label.config(text=" ".join(ocultar))
+    resultado.config(text="")
+
+    # Reactivar botones
+    for boton in botones_letras.values():
+        boton.config(
+            state="normal",
+            bg="#111111",
+            fg="cyan"
+        )
+
+
+def fin_partida():
+    respuesta = messagebox.askyesno(
+        "Fin de la partida",
+        "¿Deseas jugar una nueva partida?\n\n"
+        "Sí = Nueva partida\n"
+        "No = Salir"
+    )
+
+    if respuesta:
+        nueva_partida()
+    else:
+        ventana.destroy()
+
+
+def dibujar_ahorcado():
+    global errores
+
+    if errores == 1:
+        # Cabeza
+        canvas.create_oval(
+            120, 50, 170, 100,
+            outline="white",
+            width=3,
+            tags="ahorcado"
+        )
+
+    elif errores == 2:
+        # Cuerpo
+        canvas.create_line(
+            145, 100, 145, 160,
+            fill="white",
+            width=3,
+            tags="ahorcado"
+        )
+
+    elif errores == 3:
+        # Brazo izquierdo
+        canvas.create_line(
+            145, 120, 115, 140,
+            fill="white",
+            width=3,
+            tags="ahorcado"
+        )
+
+    elif errores == 4:
+        # Brazo derecho
+        canvas.create_line(
+            145, 120, 175, 140,
+            fill="white",
+            width=3,
+            tags="ahorcado"
+        )
+
+    elif errores == 5:
+        # Pierna izquierda
+        canvas.create_line(
+            145, 160, 120, 200,
+            fill="white",
+            width=3,
+            tags="ahorcado"
+        )
+
+    elif errores == 6:
+        # Pierna derecha
+        canvas.create_line(
+            145, 160, 170, 200,
+            fill="white",
+            width=3,
+            tags="ahorcado"
+        )
+
+
+def verificar(letra):
+    global errores
+
+    botones_letras[letra].config(state="disabled")
+
+    # LETRA CORRECTA
+    if letra in palabra:
+
+        botones_letras[letra].config(
+            bg="green",
+            fg="white"
+        )
+
+        for i in range(len(palabra)):
+            if palabra[i] == letra:
+                ocultar[i] = letra
+
+        palabra_label.config(text=" ".join(ocultar))
+
+        # Ganó
+        if "_" not in ocultar:
+
+            resultado.config(
+                text="🎉 ¡GANASTE!",
+                fg="lime"
+            )
+
+            for b in botones_letras.values():
+                b.config(state="disabled")
+
+            ventana.after(1000, fin_partida)
+
+    # LETRA INCORRECTA
+    else:
+
+        botones_letras[letra].config(
+            bg="red",
+            fg="white"
+        )
+
+        errores += 1
+
+        dibujar_ahorcado()
+
+        # Perdió
+        if errores >= 6:
+
+            resultado.config(
+                text=f"☠️ PERDISTE\nLa palabra era: {palabra}",
+                fg="red"
+            )
+
+            palabra_label.config(
+                text=" ".join(palabra)
+            )
+
+            for b in botones_letras.values():
+                b.config(state="disabled")
+
+            ventana.after(1000, fin_partida)
+
+
+def iniciar_juego():
+    inicio.destroy()
+    ventana.deiconify()
+    nueva_partida()
+
+
+# ==========================
+# VENTANA PRINCIPAL
+# ==========================
+ventana = tk.Tk()
+ventana.title("Ahorcado Neón")
+ventana.geometry("900x700")
+ventana.config(bg="black")
+
+# Ocultar hasta pulsar JUGAR
+ventana.withdraw()
+
+
+# ==========================
+# TÍTULO
+# ==========================
+titulo = tk.Label(
+    ventana,
+    text="AHORCADO",
+    font=("Arial", 28, "bold"),
+    fg="cyan",
+    bg="black"
+)
+titulo.pack(pady=10)
+
+
+# ==========================
+# CANVAS DEL AHORCADO
+# ==========================
+canvas = tk.Canvas(
+    ventana,
+    width=250,
+    height=250,
+    bg="black",
+    highlightthickness=0
+)
+canvas.pack()
+
+# Horca
+canvas.create_line(20, 230, 200, 230, fill="cyan", width=3)
+canvas.create_line(60, 230, 60, 20, fill="cyan", width=3)
+canvas.create_line(60, 20, 145, 20, fill="cyan", width=3)
+canvas.create_line(145, 20, 145, 50, fill="cyan", width=3)
+
+
+# ==========================
+# PALABRA
+# ==========================
+palabra_label = tk.Label(
+    ventana,
+    text="",
+    font=("Consolas", 28, "bold"),
+    fg="white",
+    bg="black"
+)
+palabra_label.pack(pady=10)
+
+
+# ==========================
+# RESULTADO
+# ==========================
+resultado = tk.Label(
+    ventana,
+    text="",
+    font=("Arial", 18, "bold"),
+    bg="black"
+)
+resultado.pack(pady=10)
+
+
+# ==========================
+# TECLADO
+# ==========================
+frame_teclado = tk.Frame(
+    ventana,
+    bg="black"
+)
+frame_teclado.pack(pady=15)
+
+botones_letras = {}
+
+letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+
+for i, letra in enumerate(letras):
+
+    boton = tk.Button(
+        frame_teclado,
+        text=letra,
+        width=4,
+        height=2,
+        bg="#111111",
+        fg="cyan",
+        activebackground="cyan",
+        font=("Arial", 12, "bold"),
+        command=lambda l=letra.lower(): verificar(l)
+    )
+
+    fila = i // 9
+    columna = i % 9
+
+    boton.grid(
+        row=fila,
+        column=columna,
+        padx=3,
+        pady=3
+    )
+
+    botones_letras[letra.lower()] = boton
+
+
+# ==========================
+# BOTÓN NUEVA PARTIDA
+# ==========================
+btn_nuevo = tk.Button(
+    ventana,
+    text="🔄 NUEVA PARTIDA",
+    command=nueva_partida,
+    bg="cyan",
+    fg="black",
+    font=("Arial", 14, "bold")
+)
+btn_nuevo.pack(pady=20)
+
+
+# ==========================
+# VENTANA DE INICIO
+# ==========================
+inicio = tk.Toplevel()
+inicio.title("Inicio")
+inicio.geometry("400x300")
+inicio.config(bg="black")
+
+tk.Label(
+    inicio,
+    text="AHORCADO NEÓN",
+    font=("Arial", 24, "bold"),
+    fg="cyan",
+    bg="black"
+).pack(pady=40)
+
+tk.Button(
+    inicio,
+    text="▶ JUGAR",
+    font=("Arial", 14, "bold"),
+    bg="cyan",
+    fg="black",
+    width=15,
+    command=iniciar_juego
+).pack(pady=10)
+
+tk.Button(
+    inicio,
+    text="❌ SALIR",
+    font=("Arial", 14, "bold"),
+    bg="red",
+    fg="white",
+    width=15,
+    command=ventana.destroy
+).pack(pady=10)
+
+ventana.mainloop()

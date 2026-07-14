@@ -1,0 +1,132 @@
+from abc import ABC, abstractmethod
+
+class personaje(ABC):
+    def __init__ (self, nombre, vida, nivel):
+        self.nombre = nombre
+        self._vida = vida
+        self.nivel = nivel
+    
+    def recibir_daño (self, cantidad):
+        if cantidad >0:
+            self._vida -= cantidad
+            print(f"{self.nombre} recicbio {cantidad} daño\n"
+                  f"vida restante:{self._vida}")
+            if self._vida <= 0:
+                self._vida = 0
+                print(f"{self.nombre} caido en combate")
+        
+            else:
+                print (f"{self.nombre} esquivo")
+    @abstractmethod
+    def Atacar(self):
+        pass
+
+    def esta_vivo(self):
+        return self._vida > 0
+
+    def get_vida( self):
+        return self._vida
+
+class guerrero (personaje):
+    def __init__ (self, nombre, vida, nivel,fuerza):
+        super().__init__ (nombre, vida, nivel)
+        self.fuerza = fuerza
+
+    def Atacar(self):
+        Daño = self.nivel + self.fuerza
+        print(f"{self.nombre} ataca causando {Daño} de daño")
+
+class Mago (personaje):
+    def __init__( self, nombre, vida, nivel, mana):
+        super().__init__(nombre, vida, nivel)
+        self.mana = mana
+
+    def Atacar(self):
+        Daño = self.nivel + self.mana
+        print(f"{self.nombre} lanza un hechizo causando{Daño} de daño")
+
+    def curar(self, costo_mana=10):
+        if self.mana >= costo_mana:
+            self.mana -= costo_mana
+            cantidad = self.nivel + costo_mana
+            self._vida += cantidad
+            print(f"{self.nombre} se cura {cantidad} punto de vida\n"
+                      f"vida actual: { self._vida} | mana restante: {self.mana}")
+        else:
+            print(f"{self.nombre}no tiene suficiente mana para curarse")
+
+class elfo(personaje):
+    def __init__(self, nombre, vida, nivel, arquero, agilida, rapidez):
+        super().__init__(nombre, nivel, vida)
+        self.arquero = arquero
+        self.agilida = agilida
+        self.rapidez = rapidez
+
+    def Atacar(self):
+        daño = self.nivel + self.arquero + self.agilida + self.rapidez
+        print(f"{self.nombre} dispara unaflecha causando {daño} de daño")
+    
+class enano(personaje):
+    def __init__(self, nombre , nivel, vida, magiaelementaltierra, defensa):
+        super().__init__(nombre, nivel, vida)
+        self.magiaelementaltierra = magiaelementaltierra
+        self.defensa = defensa
+
+    def Atacar(self):
+        daño = self.nivel + self.magiaelementaltierra + self.defensa
+        print(f"{self.nombre} lanza unhechizo de tierra causando {daño} de daño")
+    
+class ogro(personaje):
+    def __init__(self, nombre, vida, nivel, embocacion):
+        super().__init__(nombre, vida, nivel)
+        self.embocacion = embocacion
+    def Atacar(self):
+        daño = self.nivel + self.embocacion
+        print(f"{self.nombre} embocacion causando {daño} de daño")
+
+class equipo:
+    def __init__(self):
+        self.lista_personaje = []
+
+    def Agregar_personaje(self,personaje):
+        self.lista_personaje.append(personaje)
+
+    def Mostrar_Estado(self):
+        for personaje in self.lista_personaje:
+            estado = "vivo"  if personaje.esta_vivo() else "caido"
+            print(f"{personaje.nombre} - vida: {personaje.get_vida()} - estado: {estado}")
+
+    def Mostrar_integrantes(self):
+        for personaje in self.lista_personaje:
+            print(personaje.nombre)
+
+    def vivos(self):
+        return [personaje for personaje in self.lista_personaje if personaje.esta_vivo()]
+
+
+if __name__ == "__main__":
+    g = guerrero("thor", 100, 5, 20)
+    m = Mago("merlin", 80, 4, 30)
+    e = elfo("legolas", 90, 6, 15, 20,50)
+    en = enano("gimli", 80, 10, 30, 15)
+    o = ogro("shrek", 120,8,25)
+
+mi_equipo = equipo()
+mi_equipo.Agregar_personaje(g)
+mi_equipo.Agregar_personaje(m)
+mi_equipo.Agregar_personaje(e)
+mi_equipo.Agregar_personaje(en)
+mi_equipo.Agregar_personaje(o)
+mi_equipo.Mostrar_integrantes()
+
+
+g.Atacar()
+m.Atacar()
+e.Atacar()
+en.Atacar()
+o.Atacar()
+
+m.recibir_daño(50)
+m.curar()
+
+mi_equipo.Mostrar_Estado()

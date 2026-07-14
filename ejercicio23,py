@@ -1,0 +1,64 @@
+class libro:
+    def __init__(self, titulo, categoria, autor):
+        self.titulo = titulo
+        self.categoria = categoria
+        self.autor = autor
+        self.p = False
+
+    def prestar (self):
+            if  not self.p:
+                self.p = True
+                return f"el libro{self.titulo} ha sido prestado"
+            else:
+                return F"el libro{self.titulo} ya esta prestado"
+    def devolver (self):
+            self.p = False
+            return f"el libro {self.titulo} ha sido devuelto"
+    def esta_prestado (self):
+            return not self.p
+
+mi_libro = libro(" el principito", "novela", "Saint-Exupéry")
+print(mi_libro.prestar())
+print(mi_libro.prestar())
+print(mi_libro.devolver())
+
+class biblioteca:
+    def __init__(self, nombre):
+            self.nombre = nombre
+            self.libro = []
+
+    def agregar_libros(self, libro):
+            self.libro.append(libro)
+            return f"el libro {libro.titulo} fue agregado a {self.nombre}"
+    
+    def mostrar_libro(self):
+          if not self.libro:
+                return " no hay libros en la biblioteca"
+          for l in self.libro:
+                estado = "prestado" if l.p else "disponible"
+                print(f"- {l.titulo} | {l.autor} | {estado}")
+
+    def buscador_libro(self, titulo):
+          for l in self.libro:
+                if l.titulo == titulo:
+                      return l
+                return "libro no encontrado"
+          
+mi_biblioteca = biblioteca("biblioteca central")
+libro1 = libro("el principito", "novela", "saint-exupéry")
+libro2 = libro("1984", " distopia","orwell")
+libro3 = libro("cien años de soledad"," novela", "Garcia Marquez")
+libro4 = libro("harry potter","fantasia", "j.k. rowling")
+libro5 = libro("el quijote","clasico", "cervantes")
+
+mi_biblioteca.agregar_libros(libro1)
+mi_biblioteca.agregar_libros(libro2)
+mi_biblioteca.agregar_libros(libro3)
+mi_biblioteca.agregar_libros(libro4)
+mi_biblioteca.agregar_libros(libro5)
+
+mi_biblioteca.mostrar_libro()
+
+libro1.prestar()
+print("\ndespues de prestar el prinpicito:")
+mi_biblioteca.mostrar_libro()
