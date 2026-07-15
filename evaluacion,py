@@ -1,0 +1,110 @@
+class Mascota:
+    def __init__(self, nombre, especie):
+        self.nombre = nombre
+        self.especie = especie
+        self.hambre = 50
+        self.energia = 100
+        self.animo = "Feliz" , "tirste" , "enojado" , "cansado" , "aburrido" , "emocionado" , "asustado" , "sorprendido" , "confundido" , "orgulloso" , "avergonzado" , "celoso" , "aliviado" , "culpable" , "frustrado" , "inseguro" , "melancólico" , "nostálgico" , "preocupado" , "relajado"
+
+    def get_nombre(self):
+        return self.nombre
+
+    def get_especie(self):
+        return self.especie
+
+    def get_hambre(self):
+        return self.hambre
+
+    def get_energia(self):
+        return self.energia
+
+    def get_animo(self):
+        return self.animo
+
+
+    def dormir(self):
+        self.energia = min(100, self.energia + 30)
+        self.animo = "cansado"
+        print(f"{self.nombre} durmió.")
+
+    def alimentar(self):
+        self.hambre = max(0, self.hambre - 20)
+        print(f"{self.nombre} fue alimentado.")
+
+    def jugar(self):
+        if self.energia >= 15:
+            self.energia -= 15
+            self.hambre += 10
+            self.animo = "Feliz"
+            print(f"{self.nombre} está jugando.")
+        else:
+            self.animo = "cansado"
+            print(f"{self.nombre} está muy cansado para jugar.")
+
+    def sonido(self):
+        print("La mascota hace un sonido.")
+
+    def informacion(self):
+        print("\n------ INFORMACIÓN ------")
+        print("Nombre:", self.nombre)
+        print("Especie:", self.especie)
+        print("Hambre:", self.hambre)
+        print("Energía:", self.energia)
+        print("Ánimo:", self.animo)
+
+
+class Perro(Mascota):
+    def __init__(self, nombre):
+        super().__init__(nombre, "Perro")
+
+    def sonido(self):
+        print("¡Guau! ¡Guau!")
+
+    def ladrar(self):
+        print(f"{self.nombre} está ladrando.")
+
+    def traer_pelota(self):
+        if self.energia >= 10:
+            self.energia -= 10
+            self.hambre += 5
+            print(f"{self.nombre} trajo la pelota.")
+        else:
+            print(f"{self.nombre} está muy cansado para traer la pelota.")
+
+
+class Gato(Mascota):
+    def __init__(self, nombre):
+        super().__init__(nombre, "Gato")
+        self.independiente = True
+
+    def sonido(self):
+        print("Miau.")
+
+    def ronronear(self):
+        print(f"{self.nombre} está ronroneando.")
+
+    def ignorar(self):
+        print(f"{self.nombre} te está ignorando porque es independiente.")
+
+perro = Perro("Max")
+gato = Gato("Michi")
+
+print("=== PERRO ===")
+perro.informacion()
+perro.ladrar()
+perro.traer_pelota()
+perro.jugar()
+perro.alimentar()
+perro.dormir()
+perro.sonido()
+perro.informacion()
+
+print("\n=== GATO ===")
+gato.informacion()
+gato.ronronear()
+gato.ignorar()
+gato.jugar()
+gato.alimentar()
+gato.dormir()
+gato.sonido()
+gato.informacion()

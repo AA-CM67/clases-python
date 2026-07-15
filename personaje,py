@@ -1,0 +1,92 @@
+from abc import ABC, abstractmethod
+
+class personaje(ABC):
+    def __init__ (self, nombre, vida, nivel):
+        self.nombre = nombre
+        self._vida = vida
+        self.nivel = nivel
+    
+    def recibir_daño (self, cantidad):
+        if cantidad >0:
+            self._vida -= cantidad
+            print(f"{self.nombre} recicbio {cantidad} daño\n"
+                f"vida restante:{self._vida}")
+            if self._vida <= 0:
+                self._vida = 0
+                print(f"{self.nombre} caido en combate")
+        
+            else:
+                print (f"{self.nombre} esquivo")
+    @abstractmethod
+    def Atacar(self):
+        pass
+
+    def esta_vivo(self):
+        return self._vida > 0
+
+    def get_vida( self):
+        return self._vida
+
+class guerrero (personaje):
+    def __init__ (self, nombre, vida, nivel,fuerza):
+        super().__init__ (nombre, vida, nivel)
+        self.fuerza = fuerza
+
+    def Atacar(self):
+            Daño = self.nivel + self.fuerza
+            print(f"{self.nombre} ataca causando {Daño} de daño")
+
+class Mago (personaje):
+    def __init__( self, nombre, vida, nivel, mana):
+        super().__init__(nombre, vida, nivel)
+        self.mana = mana
+
+    def Atacar(self):
+            Daño = self.nivel + self.mana
+            print(f"{self.nombre} lanza un hechizo causando{Daño} de daño")
+
+    def curar(self, costo_mana=10):
+            if self.mana >= costo_mana:
+                self.mana -= costo_mana
+                cantidad = self.nivel + costo_mana
+                self._vida += cantidad
+                print(f"{self.nombre} se cura {cantidad} punto de vida\n"
+                      f"vida actual: { self._vida} | mana restante: {self.mana}")
+            else:
+                print(f"{self.nombre}no tiene suficiente mana para curarse")
+
+class equipo:
+    def __init__(self):
+        self.lista_personaje = []
+
+    def Agregar_personaje(self,personaje):
+        self.lista_personaje.append(personaje)
+
+    def Mostrar_Estado(self):
+        for personaje in self.lista_personaje:
+            estado = "vivo"  if personaje.esta_vivo() else "caido"
+            print(f"{personaje.nombre} - vida: {personaje.get_vida()} - estado: {estado}")
+
+    def Mostrar_integrantes(self):
+        for personaje in self.listado_personje:
+            print(personaje.nombre)
+
+    def vivos(self):
+        return [personaje for personaje in self.lista_personaje if personaje.estado_vivo()]
+
+
+if __name__ : "__main__"
+g = guerrero("thor", 100, 5, 20)
+m = Mago("merlin", 80, 4, 30)
+
+equipo = equipo()
+equipo.Agregar_personaje(g)
+equipo.Agregar_personaje(m)
+
+g.Atacar()
+m.Atacar()
+
+m.recibir_daño(50)
+m.curar()
+
+equipo.Mostrar_Estado()
